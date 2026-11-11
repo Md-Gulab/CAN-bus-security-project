@@ -6,12 +6,21 @@
 
 int main(void) {
     usart_init(9600) ;
+    uart_println("Boot OK");
 
-    for(const char *s = "USART OK!!\r\n" ; *s ; s++) usart_write((uint8_t)*s) ;
-    for(const char *p = "Muhammad you did it!!\r\n" ; *p ; p++) usart_write((uint8_t)*p) ;
+    uart_print("UBRR0 = ");  uart_print_dec(((uint16_t)UBRR0H << 8) | UBRR0L);
+    uart_println("");
+    uart_print("UCSR0B = 0b"); uart_print_bin8(UCSR0B);
+    uart_println("");
+    uart_print("UCSR0C = 0x");  uart_print_hex8(UCSR0C);
+    uart_println("");
 
+    uint32_t count = 0;
     while(1){
-        usart_write(usart_read()) ;
+        uart_print("count = ");
+        uart_print_dec(count++);
+        uart_println("");
+        _delay_ms(500);
     }
 
 }

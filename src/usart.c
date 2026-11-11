@@ -28,3 +28,48 @@ uint8_t usart_read(void){
         ;                                      // wait: byte received 
     return UDR0;
 }
+
+void uart_print(const char *s){
+    while (*s)
+        usart_write((uint8_t)*s++);
+}
+
+void uart_println(const char *s){
+    uart_print(s);
+    uart_print("\r\n");
+}
+
+// Unsigned decimal, no leading zeros (uint32_t max = 4294967295, 10 digits)
+void uart_print_dec(uint32_t value){
+    char buf[10];
+    uint8_t i = 0;
+
+    if (value == 0) {
+        usart_write('0');
+        return;
+    }
+    while (value) {
+        buf[i++] = (char)('0' + (value % 10));
+        value /= 10;
+    }
+    while (i)
+        usart_write((uint8_t)buf[--i]);      // digits come out reversed 
+}
+
+// Two hex digits, e.g. 0x0F prints "0F" 
+void uart_print_hex8(uint8_t value){
+    static const char hex[] = "0123456789ABCDEF";
+    usart_write((uint8_t)hex[value >> 4]);
+    usart_write((uint8_t)hex[value & 0x0F]);
+}
+
+void uart_print_hex16(uint16_t value){
+    uart_print_hex8((uint8_t)(value >> 8));
+    uart_print_hex8((uint8_t)(value & 0xFF));
+}
+
+// Eight bits, MSB first. Great for dumping registers
+void uart_print_bin8(uint8_t value){
+    for (int8_t bit = 7; bit >= 0; bit--)
+        usart_write((value & (1 << bit)) ? '1' : '0');
+}
