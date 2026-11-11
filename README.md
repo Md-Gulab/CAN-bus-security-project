@@ -66,8 +66,8 @@ To find the COM port: `[System.IO.Ports.SerialPort]::GetPortNames()`
 - [x] Fixed PATH so all tools are available in the VS Code terminal
 - [x] Set up the VS Code project structure (`inc/`, `src/`, `Makefile`)
 - [x] Build pipeline working: `main.c` compiles to `main.elf` and `main.hex`
-- [ ] Flash and verify a register-level LED blink on the board
-- [ ] Bare-metal UART driver (no `Serial`)
+- [x] Flash and verify a register-level LED blink on the board
+- [x] Bare-metal UART driver (no `Serial`)
 - [ ] Timer-based delays and interrupts
 - [ ] SPI driver
 - [ ] MCP2515 CAN controller driver
