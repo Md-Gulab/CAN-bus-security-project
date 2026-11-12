@@ -1,29 +1,27 @@
-#include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include "usart.h"
-#include "timer.h"
 
 int main(void)
 {
-    DDRB |= (1 << DDB5);              // PB5 (LED) as output
     usart_init(9600);
-    timer0_init();
-    sei();                            // enable interrupts globally 
+    sei();                              // without this, no ISR ever runs 
 
-    uint32_t t_led = 0, t_print = 0;
+    uart_println("Type now, 3 s stall...");
+    _delay_ms(3000);                    // CPU is busy, not reading 
 
-    while (1) {
-        uint32_t now = millis();
+    uart_print("got ");
+    uart_print_dec(uart_available());
+    uart_println(" bytes:");
 
-        if (now - t_led >= 500) {
-            t_led = now;
-            PINB = (1 << PINB5);      // writing 1 to PINx toggles PORTx
-        }
-        if (now - t_print >= 1000) {
-            t_print = now;
-            uart_print("t = ");
-            uart_print_dec(now);
-            uart_println(" ms");
-        }
-    }
+    while (uart_available())
+        usart_write(uart_read());
+    uart_println("");
+
+    uart_print("overflow = ");
+    uart_print_dec(uart_overflow_count());
+    uart_println("");
+
+    while (1)
+        ;
 }
