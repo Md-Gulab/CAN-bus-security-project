@@ -68,7 +68,7 @@ To find the COM port: `[System.IO.Ports.SerialPort]::GetPortNames()`
 - [x] Build pipeline working: `main.c` compiles to `main.elf` and `main.hex`
 - [x] Flash and verify a register-level LED blink on the board
 - [x] Bare-metal UART driver (no `Serial`)
-- [ ] Timer-based delays and interrupts
+- [x] Timer-based delays and interrupts
 - [ ] SPI driver
 - [ ] MCP2515 CAN controller driver
 - [ ] Two-node CAN communication with the STM32F446RE
