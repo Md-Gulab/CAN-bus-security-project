@@ -8,18 +8,35 @@
 
 
 
-typedef struct CONFIG{
-    uint8_t instance        ; // 1 0r 2
-    uint8_t pinset          ; // pin number
-    uint16_t bitrate        ; // speed on CAN bus
-    uint8_t sample_point    ; // when to sample
-    uint8_t mode            ; // normal, loopback, silent, s+lb
-    uint8_t auto_retransmit ; // 1 or 0
-    uint8_t auto_busRecovery; // on or off
-    uint8_t Tx_Order        ; // by ID or by request
-    uint8_t Rx_FIFO_Config  ; // locked or overwrite
-    uint8_t Hw_timestamps   ; // on or off 
-}config;
+typedef enum { CAN_INSTANCE_1 = 1 } can_instance_t;      // CAN2 later 
+
+typedef enum {
+    CAN_PINS_PA11_PA12 = 0,     // RX = PA11, TX = PA12 
+    CAN_PINS_PB8_PB9   = 1      // RX = PB8,  TX = PB9  
+} can_pinset_t;
+
+typedef enum {
+    CAN_MODE_NORMAL = 0,
+    CAN_MODE_LOOPBACK,
+    CAN_MODE_SILENT,
+    CAN_MODE_SILENT_LOOPBACK
+} can_mode_t;
+
+typedef struct {
+    can_instance_t instance;
+    can_pinset_t   pins;
+    uint32_t       pclk1_hz;            // actual APB1 clock 
+    uint32_t       bitrate;
+    uint16_t       sample_permille;     // e.g. 875 
+    can_mode_t     mode;
+    bool           auto_retransmit;     // true  -> NART = 0 
+    bool           auto_bus_off_recovery;   // ABOM 
+    bool           tx_by_request_order;     // TXFP 
+    bool           rx_fifo_locked;          // RFLM 
+    bool           time_triggered;          // TTCM 
+    bool           auto_wakeup;             // AWUM 
+    bool           debug_freeze;            // DBF 
+} can_config_t;
 
 typedef struct  FRAME{
     uint32_t ID             ; // frame ID
@@ -54,16 +71,9 @@ typedef struct STATS{
     uint8_t bus_off_count       ; // count of bus-off
 }stats;
 
-typedef struct {
-    uint16_t brp;               // register value = prescaler - 1   (0..1023) 
-    uint8_t  ts1;               // register value = tBS1 - 1        (0..15)   
-    uint8_t  ts2;               // register value = tBS2 - 1        (0..7)    
-    uint8_t  sjw;               // register value = SJW - 1         (0..3)    
-    uint16_t sample_permille;   // sample point actually achieved   
-} can_bit_timing_t;
-
                                  
-static void can_gpio_af(GPIO_TypeDef *port, uint32_t pin, uint32_t af, uint32_t pupd) ;                                 
+static void can_gpio_af(GPIO_TypeDef *port, uint32_t pin, uint32_t af, uint32_t pupd) ;  
+status can_init(const can_config_t *cfg) ;                               
 
 
 
