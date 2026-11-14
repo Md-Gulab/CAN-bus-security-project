@@ -12,7 +12,7 @@ typedef struct {
     uint16_t sample_permille;
 } can_bit_timing_t;
 
-can_status_t can_calc_bit_timing(uint32_t pclk_hz,
+status can_calc_bit_timing(uint32_t pclk_hz,
                                  uint32_t bitrate,
                                  uint16_t sample_permille,
                                  can_bit_timing_t *out);

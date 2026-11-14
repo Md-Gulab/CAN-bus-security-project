@@ -4,6 +4,7 @@
 #include<stdint.h>
 #include<stdbool.h>
 #include "can_types.h"
+#include "stm32f446xx.h"
 
 
 
@@ -61,19 +62,8 @@ typedef struct {
     uint16_t sample_permille;   // sample point actually achieved   
 } can_bit_timing_t;
 
-
-
-static status can_wait_flag(volatile uint32_t *reg,
-                                  uint32_t mask,
-                                  bool expect_set,
-                                  uint32_t timeout) ;
-
-status can_calc_bit_timing(uint32_t pclk_hz,
-                                 uint32_t bitrate,
-                                 uint16_t sample_permille,
-                                 can_bit_timing_t *out) ; 
                                  
-                                 
+static void can_gpio_af(GPIO_TypeDef *port, uint32_t pin, uint32_t af, uint32_t pupd) ;                                 
 
 
 

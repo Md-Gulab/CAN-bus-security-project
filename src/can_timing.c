@@ -1,4 +1,5 @@
-#include "timing.h"
+#include "can_timing.h"
+#include <stdbool.h>
 
 
 

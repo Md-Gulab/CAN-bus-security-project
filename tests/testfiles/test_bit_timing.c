@@ -1,7 +1,8 @@
 /* test_can_timing.c */
 #include "unity.h"
 #include "can_types.h"
-#include "can.h"     /* declares can_bit_timing_t and can_calc_bit_timing */
+#include "can_timing.h"
+#include "can_util.h"
 
 void setUp(void)    { }     /* runs before each test; Unity requires it to exist */
 void tearDown(void) { }     /* runs after each test; same */
