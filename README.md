@@ -14,10 +14,9 @@ A bare-metal CAN driver for the STM32F446RE (bxCAN, CMSIS only, no HAL), built a
 
 ```
 STM/
-  inc/    can.h  can_types.h  can_timing.h  can_util.h
-  src/    can.c  can_timing.c  can_util.c  main.c  startup_stm32f446xx.s
-  tests/  unity/  testfiles/test_bit_timing.c
-  CMSIS/  linker.ld  Makefile
+  Arduino/    Folder for separate source code of ARDUINO UNO
+  STM/        Folder for separate source code of STM32F446RE 
+  README.md   Readme file
 ```
 
 - `can_timing.c` and `can_util.c` are pure C with no CMSIS include, so they build and test on the PC.
@@ -26,43 +25,12 @@ STM/
 ## Build, test, debug
 
 ```
-make test           # build the Unity host tests (PC)
-make runtest        # run them
-make build_can      # cross-compile can_project.elf (arm-none-eabi-gcc, -g -O0)
-
-openocd -f interface/stlink.cfg -f target/stm32f4x.cfg     # terminal 1
-make gdb                                                   # terminal 2
-(gdb) target extended-remote :3333
-(gdb) monitor reset halt
-(gdb) load
+Navigate in separate folders ( Arduino & STM ) to find their Makefiles & folllow the commands that's there.
 ```
 
 ## Driver status
-
+Woring CAN bus : Arduino UNO sender & STM32 receiver.
 Verified so far in loopback mode (500 kbit/s, PCLK1 = 16 MHz HSI, 87.5 % sample point), by reading registers in GDB:
-
-| Function | File | Status |
-|---|---|---|
-| `can_wait_flag` (timeout helper) | can_util.c | done, Unity-tested |
-| `can_calc_bit_timing` | can_timing.c | done, Unity-tested |
-| `can_init` (clocks, pins AF9, reset, MCR options, BTR) | can.c | done, registers match |
-| `can_filter_accept_all` | can.c | done |
-| `can_start` | can.c | done |
-| `can_transmit` | can.c | done, frame ID 0x123 / 5 bytes sent |
-| `can_receive`, `can_rx_pending`, `can_tx_free_mailboxes` | can.c | done, frame read back with the right ID, length and data |
-
-Milestone: a frame built in software goes out through a TX mailbox, loops back through the bit-timing logic and the filter, and comes back from RX FIFO0 unchanged.
-
-### Lessons learned (bugs fixed on the way)
-
-- FS1R: a **1** means a 32-bit filter bank, not 0.
-- TX mailbox registers are not at the top of `CAN_TypeDef`: use `sTxMailBox[n]` for TX and `sFIFOMailBox[n]` for RX.
-- Write TXRQ last, with `|=`, never `=`, or the ID is wiped.
-- Return right after starting the first free mailbox, or the frame is sent three times.
-- Clear TDLR and TDHR before packing bytes, because mailbox registers are undefined after reset.
-- `RDTR` holds more than the length: mask the low 4 bits, then clamp to 8.
-- Release the RX FIFO with a plain `=` on RFOM, never `|=`, because FULL and FOVR clear when 1 is written.
-- A frame takes about 200 microseconds, so wait for `can_rx_pending` before reading it.
 
 ## Bigger plan
 
