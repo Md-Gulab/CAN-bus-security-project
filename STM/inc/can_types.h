@@ -1,0 +1,18 @@
+#ifndef CAN_TYPES_H
+#define CAN_TYPES_H
+
+typedef enum STATUS{
+    OK = 0 ,
+    TIMEOUT,
+    BUSY,
+    NO_FREE_MAILBOX,
+    FIFO_EMPTY,
+    INVALID_PARAM,
+    INVALID_LEN,
+    BUS_OFF,
+    CAN_ERR_NOT_INITIALISED,
+    CAN_ERR_NO_FREE_MAILBOX,
+    CAN_ERR_FIFO_EMPTY
+}status;
+
+#endif
